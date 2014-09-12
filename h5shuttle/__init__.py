@@ -1,6 +1,13 @@
 import h5py
 import pandas as pd
 
+class _H5Node(dict):
+    def __init__(self, kwargs):
+        for k,v in kwargs.iteritems():
+            setattr(self, k, v)
+        self.update(kwargs)
+
+
 def load(file, path="/"):
     def path2value(path):
         fpk = file[path].keys()
@@ -17,7 +24,7 @@ def load(file, path="/"):
             else:
                 raise Exception("only 1d/2d arrays supported so far")
         else:
-            return {n:path2value("/".join([path, n])) for n in fpk}
+            return _H5Node({n: path2value("/".join([path, n])) for n in fpk})
 
     file = h5py.File(file, 'r')
     return path2value(path)
