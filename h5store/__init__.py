@@ -11,7 +11,7 @@ class _H5Node(dict):
 
 def save(X, file):
     def value2path(file, path, node):
-        if (type(node) == "dict"):
+        if type(node) == "dict":
             file.create_group(path)
             for k,v in node.iteritems():
                 value2path(file, "/".join([path, k]), v)
@@ -22,7 +22,6 @@ def save(X, file):
                 val = node.values
 
             file.create_dataset("/".join([path, "value"]), data=val)
-
 
     h5f = h5py.File(file)
     value2path(h5f, "", X)
@@ -37,9 +36,9 @@ def load(file, path="/"):
             names = [file[path][n].value.tolist()
                      if n in fpk else None for n in nidx]
 
-            if (len(value.shape) == 1):
+            if len(value.shape) == 1:
                 return pd.DataFrame(value, index=names[0])
-            if (len(value.shape) == 2):
+            elif len(value.shape) == 2:
                 return pd.DataFrame(value.transpose(), index=names[0], columns=names[1])
             else:
                 #TODO: use hierarchical indexing here
